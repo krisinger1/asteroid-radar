@@ -15,6 +15,8 @@ class MainViewModel : ViewModel() {
     val asteroidList : LiveData<List<Asteroid>>
         get()=_asteroidList
 
+    val imgUrl : String = "https://apod.nasa.gov/apod/image/2001/STSCI-H-p2006a-h-1024x614.jpg"
+
 
     init{
         val asteroid1= Asteroid(1,"AB123","2020-2-2",1.0,.3,5.0, 100.0, true)
