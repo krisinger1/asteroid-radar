@@ -22,9 +22,9 @@ class MainFragment : Fragment() {
         binding.lifecycleOwner = this
 
         binding.viewModel = viewModel
-//        binding.asteroidRecycler.adapter=AsteroidListAdapter(AsteroidListAdapter.AsteroidListener{
-//            viewModel.displayAsteroidDetails(it)
-//        })
+        binding.asteroidRecycler.adapter=AsteroidListAdapter(AsteroidListAdapter.AsteroidListener{
+            viewModel.displayAsteroidDetails(it)
+        })
 
         viewModel.navigateToAsteroidDetails.observe(viewLifecycleOwner, Observer{
             if (it!= null){

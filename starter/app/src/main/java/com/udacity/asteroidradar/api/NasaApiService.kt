@@ -12,11 +12,11 @@ import retrofit2.http.Query
 
 
 interface NasaApiService{
-    @GET("neo/rest/v1/feed?api_key=DEMO_KEY")
+    @GET("neo/rest/v1/feed")
 //    suspend fun getAsteroids(@Query("start_date") start : String,
 //                             @Query("api_key") api :String)
-//    suspend fun getAsteroids(@Query("api_key") api_key : String): String
-    fun getAsteroids(): Call<String>
+    suspend fun getAsteroids(@Query("api_key") api_key : String): String
+//    fun getAsteroids(): Call<String>
 }
 
 // build Moshi object
