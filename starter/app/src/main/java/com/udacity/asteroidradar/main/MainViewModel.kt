@@ -6,6 +6,7 @@ import com.udacity.asteroidradar.database.getDatabase
 import com.udacity.asteroidradar.Asteroid
 import com.udacity.asteroidradar.Constants
 import com.udacity.asteroidradar.api.NasaApi
+import com.udacity.asteroidradar.api.NasaApiService
 import com.udacity.asteroidradar.api.parseAsteroidsJsonResult
 import com.udacity.asteroidradar.api.parseStringToAsteroidList
 import com.udacity.asteroidradar.repository.AsteroidsRepository
@@ -31,7 +32,13 @@ class MainViewModel(application: Application): AndroidViewModel(application){
     val asteroidList : LiveData<List<Asteroid>>
         get()=_asteroidList
 
-    val imgUrl : String = "https://apod.nasa.gov/apod/image/2001/STSCI-H-p2006a-h-1024x614.jpg"
+    private val _imgUrl = MutableLiveData<String>()
+    val imgUrl : LiveData<String>
+        get()= _imgUrl
+
+    private val _imgTitle = MutableLiveData<String>()
+    val imgTitle : LiveData<String>
+        get()= _imgTitle
 
     private val _status = MutableLiveData<String>()
     val status : LiveData<String>
@@ -42,56 +49,48 @@ class MainViewModel(application: Application): AndroidViewModel(application){
 
         Log.i("ViewModel", " in viewmodel init block")
         getAsteroids()
+        getImageOfDay()
 
 
     }
 
+    private fun getImageOfDay() {
+        viewModelScope.launch{
+            var imageOfDay = NasaApi.retrofitService.getImageOfDay("DEMO_KEY")
+            if (imageOfDay.isImage) {
+                _imgUrl.value = imageOfDay.url
+                _imgTitle.value=imageOfDay.title
+            }
+            else{
+                _imgUrl.value="https://apod.nasa.gov/apod/image/2001/STSCI-H-p2006a-h-1024x614.jpg"
+                _imgTitle.value=imageOfDay.title
+
+            }
+            Log.i("viewmodel", imageOfDay.url)
+        }
+    }
+
 
     private fun getAsteroids(){
-//        NasaApi.retrofitService.getAsteroids().enqueue(object: Callback<String>{
-//            override fun onFailure(call: Call<String>, t: Throwable) {
-//                _status.value="Failed"+t.message
-//            }
-//
-//            override fun onResponse(call: Call<String>, response: Response<String>) {
-////                _status.value =response.body()
-//                var list = parseAsteroidsJsonResult(JSONObject(response.body()))
-//                _status.value="${list==null}"
-//                if (list.size>0) {
-//                    _status.value = list[0].codename
-//                }
-//                else{
-//                    _status.value = "list is empty"
-//                }
-//            }
-//
-//        })
 
-        val asteroid1= Asteroid(1,"AB123","2020-2-2",1.0,.3,5.0, 100.0, true)
-        val asteroid2= Asteroid(1,"CD345","2020-2-2",2.0,.3,4.0, 50.0, false)
-//        _asteroidList.value=listOf(asteroid1, asteroid2)
+
         _asteroidList.value=listOf()
-//
+
         viewModelScope.launch {
             try {
                 Log.i("ViewModel", " in coroutine")
                 var jsonResult = NasaApi.retrofitService.getAsteroids("DEMO_KEY")
                 Log.i("AsteroidRepository", "jsonResult")
                 var list = parseStringToAsteroidList(jsonResult)
-//                var list = parseAsteroidsJsonResult(JSONObject(jsonResult))
 
                 if (list.size>0) {
-//                    _status.value = list[0].codename
-//                    _status.value = (_asteroidList.value)?.get(0)?.codename
                     _asteroidList.value=list
-//                    _asteroidList.value=listOf(asteroid1, asteroid2)
                 }
                 else{
                     _status.value = "error"
                     _asteroidList.value=ArrayList()
                 }
-                //_asteroidList.value = parseAsteroidsJsonResult(JSONObject(jsonResult))
-//                _asteroidList.value=listOf(asteroid1, asteroid2)
+
 //            asteroidsRepository.refreshAsteroids("2020-12-28", "DEMO_KEY")
             } catch (e: Exception){
                 Log.i("AsteroidRepository", "error in coroutine\n" + e.printStackTrace())

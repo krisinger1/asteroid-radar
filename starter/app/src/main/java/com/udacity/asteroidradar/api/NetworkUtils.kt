@@ -16,8 +16,7 @@ fun parseAsteroidsJsonResult(jsonResult: JSONObject): ArrayList<Asteroid> {
     val nextSevenDaysFormattedDates = getNextSevenDaysFormattedDates()
     for (formattedDate in nextSevenDaysFormattedDates) {
         val dateAsteroidJsonArray = nearEarthObjectsJson.getJSONArray(formattedDate)
-        // added this null check
-        //if (dateAsteroidJsonArray!=null) {
+
             for (i in 0 until dateAsteroidJsonArray.length()) {
                 val asteroidJson = dateAsteroidJsonArray.getJSONObject(i)
                 val id = asteroidJson.getLong("id")
@@ -41,12 +40,14 @@ fun parseAsteroidsJsonResult(jsonResult: JSONObject): ArrayList<Asteroid> {
                 )
                 asteroidList.add(asteroid)
             }
-        //}
+
     }
 
     return asteroidList
 }
 
+// new parse method suggested by mentor in Knowledge post 12/24/2020
+// original provided method above kept throwing exception when date wasn't found in JSON Object
 fun parseStringToAsteroidList(response: String): List<Asteroid> {
     val asteroidList = mutableListOf<Asteroid>()
     val jsonObject = JSONObject(response)
