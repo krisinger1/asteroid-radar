@@ -26,11 +26,10 @@ class MainViewModel(application: Application): AndroidViewModel(application){
     val navigateToAsteroidDetails : LiveData<Asteroid>
         get()=_navigateToAsteroidDetails
 
-//    val asteroidList = asteroidsRepository.asteroids
 
-    private val _asteroidList = MutableLiveData<List<Asteroid>>()
-    val asteroidList : LiveData<List<Asteroid>>
-        get()=_asteroidList
+//    private val _asteroidList = MutableLiveData<List<Asteroid>>()
+//    val asteroidList : LiveData<List<Asteroid>>
+//        get()=_asteroidList
 
     private val _imgUrl = MutableLiveData<String>()
     val imgUrl : LiveData<String>
@@ -45,14 +44,17 @@ class MainViewModel(application: Application): AndroidViewModel(application){
         get()=_status
 
 
+
     init{
 
         Log.i("ViewModel", " in viewmodel init block")
-        getAsteroids()
         getImageOfDay()
-
+        getAsteroids()
 
     }
+
+    val asteroidList = asteroidsRepository.asteroids
+
 
     private fun getImageOfDay() {
         viewModelScope.launch{
@@ -72,37 +74,41 @@ class MainViewModel(application: Application): AndroidViewModel(application){
 
 
     private fun getAsteroids(){
-
-
-        _asteroidList.value=listOf()
-
         viewModelScope.launch {
-            try {
-                Log.i("ViewModel", " in coroutine")
-                var jsonResult = NasaApi.retrofitService.getAsteroids("DEMO_KEY")
-                Log.i("AsteroidRepository", "jsonResult")
-                var list = parseStringToAsteroidList(jsonResult)
-
-                if (list.size>0) {
-                    _asteroidList.value=list
-                }
-                else{
-                    _status.value = "error"
-                    _asteroidList.value=ArrayList()
-                }
-
-//            asteroidsRepository.refreshAsteroids("2020-12-28", "DEMO_KEY")
-            } catch (e: Exception){
-                Log.i("AsteroidRepository", "error in coroutine\n" + e.printStackTrace())
-                _status.value = "error reading from network"
-                _asteroidList.value=ArrayList()
-
-
-            }
-            Log.i("ViewModel", " end  coroutine")
-
+            asteroidsRepository.refreshAsteroids("DEMO_KEY")
         }
 
+//
+//
+//        _asteroidList.value=listOf()
+//
+//        viewModelScope.launch {
+//            try {
+//                Log.i("ViewModel", " in coroutine")
+//                var jsonResult = NasaApi.retrofitService.getAsteroids("DEMO_KEY")
+//                Log.i("AsteroidRepository", "jsonResult")
+//                var list = parseStringToAsteroidList(jsonResult)
+//
+//                if (list.size>0) {
+//                    _asteroidList.value=list
+//                }
+//                else{
+//                    _status.value = "error"
+//                    _asteroidList.value=ArrayList()
+//                }
+//
+////            asteroidsRepository.refreshAsteroids("2020-12-28", "DEMO_KEY")
+//            } catch (e: Exception){
+//                Log.i("AsteroidRepository", "error in coroutine\n" + e.printStackTrace())
+//                _status.value = "error reading from network"
+//                _asteroidList.value=ArrayList()
+//
+//
+//            }
+//            Log.i("ViewModel", " end  coroutine")
+//
+//        }
+//
     }
 
     fun displayAsteroidDetails(asteroid: Asteroid){
