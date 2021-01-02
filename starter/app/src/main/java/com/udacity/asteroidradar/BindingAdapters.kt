@@ -21,9 +21,11 @@ fun bindImageOfDay(imageView : ImageView, imgUrl:String?){
 }
 
 @BindingAdapter("listData")
-fun bindRecyclerView(recyclerView: RecyclerView, data: List<Asteroid>){
+fun bindRecyclerView(recyclerView: RecyclerView, data: List<Asteroid>?){
     val adapter = recyclerView.adapter as AsteroidListAdapter
-    adapter.submitList(data)
+    //if (data!=null) {
+        adapter.submitList(data)
+    //}
 }
 
 @BindingAdapter("statusIcon")
