@@ -16,8 +16,7 @@ import retrofit2.http.Query
 interface NasaApiService{
     @GET("neo/rest/v1/feed")
     suspend fun getAsteroids(@Query("api_key") api_key : String): String
-//    @GET("neo/rest/v1/feed")
-//    fun getAsteroids(@Query("api_key") api_key : String): Deferred<String>
+
 
     @GET("planetary/apod")
     suspend fun getImageOfDay(@Query("api_key") api_key : String) : ImageOfDay

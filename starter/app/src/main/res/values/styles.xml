@@ -8,4 +8,16 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="bold_text">
+        <item name="android:textColor">@color/text_grey</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="normal_text">
+        <item name="android:textColor">@color/text_grey</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+
 </resources>

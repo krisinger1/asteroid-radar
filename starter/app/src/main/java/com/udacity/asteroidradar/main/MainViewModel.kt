@@ -55,60 +55,32 @@ class MainViewModel(application: Application): AndroidViewModel(application){
 
     val asteroidList = asteroidsRepository.asteroids
 
-
     private fun getImageOfDay() {
+        Log.i("viewmodel", "trying to get image of the day")
         viewModelScope.launch{
-            var imageOfDay = NasaApi.retrofitService.getImageOfDay("DEMO_KEY")
-            if (imageOfDay.isImage) {
-                _imgUrl.value = imageOfDay.url
-                _imgTitle.value=imageOfDay.title
-            }
-            else{
-                _imgUrl.value="https://apod.nasa.gov/apod/image/2001/STSCI-H-p2006a-h-1024x614.jpg"
-                _imgTitle.value=imageOfDay.title
+            try {
+                var imageOfDay = NasaApi.retrofitService.getImageOfDay("DEMO_KEY")
+                if (imageOfDay.isImage) {
+                    _imgUrl.value = imageOfDay.url
+                    _imgTitle.value = imageOfDay.title
+                } else {
+                    _imgUrl.value = "https://apod.nasa.gov/apod/image/2001/STSCI-H-p2006a-h-1024x614.jpg"
+                    _imgTitle.value = imageOfDay.title
 
+                }
+                Log.i("viewmodel", imageOfDay.url)
             }
-            Log.i("viewmodel", imageOfDay.url)
+            catch(e: Exception){
+                Log.i("viewmodel","failed to get image of the day")
+            }
         }
     }
 
 
     private fun getAsteroids(){
         viewModelScope.launch {
-            asteroidsRepository.refreshAsteroids("DEMO_KEY")
+            asteroidsRepository.refreshAsteroids(Constants.API_KEY)
         }
-
-//
-//
-//        _asteroidList.value=listOf()
-//
-//        viewModelScope.launch {
-//            try {
-//                Log.i("ViewModel", " in coroutine")
-//                var jsonResult = NasaApi.retrofitService.getAsteroids("DEMO_KEY")
-//                Log.i("AsteroidRepository", "jsonResult")
-//                var list = parseStringToAsteroidList(jsonResult)
-//
-//                if (list.size>0) {
-//                    _asteroidList.value=list
-//                }
-//                else{
-//                    _status.value = "error"
-//                    _asteroidList.value=ArrayList()
-//                }
-//
-////            asteroidsRepository.refreshAsteroids("2020-12-28", "DEMO_KEY")
-//            } catch (e: Exception){
-//                Log.i("AsteroidRepository", "error in coroutine\n" + e.printStackTrace())
-//                _status.value = "error reading from network"
-//                _asteroidList.value=ArrayList()
-//
-//
-//            }
-//            Log.i("ViewModel", " end  coroutine")
-//
-//        }
-//
     }
 
     fun displayAsteroidDetails(asteroid: Asteroid){

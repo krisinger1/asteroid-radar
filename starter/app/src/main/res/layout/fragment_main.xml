@@ -28,27 +28,27 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:adjustViewBounds="true"
+                android:contentDescription="@{viewModel.imgTitle}"
                 android:scaleType="centerCrop"
-                app:imageOfDayUrl="@{viewModel.imgUrl}"
-                />
+                app:imageOfDayUrl="@{viewModel.imgUrl}" />
 
             <TextView
                 android:id="@+id/title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:textColor="@android:color/white"
-                android:textStyle="bold"
-                android:textSize="20sp"
                 android:layout_gravity="bottom"
                 android:background="#55010613"
-                android:text="@{viewModel.imgTitle}" />
+                android:padding="16dp"
+                android:text="@{viewModel.imgTitle}"
+                android:textColor="@android:color/white"
+                android:textSize="20sp"
+                android:textStyle="bold" />
         </FrameLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/asteroid_recycler"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -58,7 +58,8 @@
             app:layout_constraintVertical_bias="0.0"
             tools:itemCount="16"
             tools:listitem="@layout/list_item_asteroid"
-            app:listData="@{viewModel.asteroidList}"/>
+            app:listData="@{viewModel.asteroidList}"
+             />
 <!--        <TextView-->
 <!--            android:id="@+id/temp_text_view"-->
 <!--            android:layout_width="match_parent"-->

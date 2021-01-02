@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.viewModelScope
 import com.udacity.asteroidradar.Asteroid
+import com.udacity.asteroidradar.Constants
 import com.udacity.asteroidradar.api.NasaApi
 import com.udacity.asteroidradar.api.parseAsteroidsJsonResult
 import com.udacity.asteroidradar.api.parseStringToAsteroidList
@@ -17,10 +18,17 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.sql.DatabaseMetaData
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class AsteroidsRepository(private val database : AsteroidsDatabase){
-    val asteroids : LiveData<List<Asteroid>> = Transformations.map(database.asteroidDao.getAsteroids()){
+
+    val dateFormat = SimpleDateFormat(Constants.API_QUERY_DATE_FORMAT)
+    val today: String = dateFormat.format(Date())
+
+    // only get asteroids from today on
+    val asteroids : LiveData<List<Asteroid>> = Transformations.map(database.asteroidDao.getAsteroids(today)){
         it.asDomainModel()
     }
 
@@ -36,14 +44,8 @@ class AsteroidsRepository(private val database : AsteroidsDatabase){
                 var list = parseStringToAsteroidList(jsonResult)
 
                 if (list.size > 0) {
-                    Log.i("AsteroidRepository", "List 0 ="+list[0].codename)
-
                     asteroidArray=toDatabaseModel(list)
-                    Log.i("AsteroidRepository", "asteroidArray 0 ="+asteroidArray[0].codename)
-
                     database.asteroidDao.insertAll(*asteroidArray)
-                    Log.i("AsteroidRepository", "${asteroids==null}")
-
                 }
                 else{
                     Log.i("AsteroidRepository", "no asteroids in list")
@@ -51,7 +53,6 @@ class AsteroidsRepository(private val database : AsteroidsDatabase){
             }
             catch (e: Exception){
                 Log.i("AsteroidRepository", " in catch block. getAsteroids failed.")
-                database.asteroidDao.insertAll(*asteroidArray)
 
             }
         }

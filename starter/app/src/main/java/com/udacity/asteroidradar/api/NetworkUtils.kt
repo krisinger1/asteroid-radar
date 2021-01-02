@@ -42,7 +42,6 @@ fun parseAsteroidsJsonResult(jsonResult: JSONObject): ArrayList<Asteroid> {
             }
 
     }
-
     return asteroidList
 }
 
@@ -54,8 +53,10 @@ fun parseStringToAsteroidList(response: String): List<Asteroid> {
     val nearEarthObjectsJson = jsonObject.getJSONObject("near_earth_objects")
     val dateList = nearEarthObjectsJson.keys()
     val dateListSorted = dateList.asSequence().sorted()
+    Log.i("Networkutils","")
     dateListSorted.forEach {
         val key: String = it
+        Log.i("NetworkUtils", key)
         val dateAsteroidJsonArray = nearEarthObjectsJson.getJSONArray(key)
         for (i in 0 until dateAsteroidJsonArray.length()) {
             val asteroidJson = dateAsteroidJsonArray.getJSONObject(i)

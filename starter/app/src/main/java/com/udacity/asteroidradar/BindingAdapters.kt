@@ -16,8 +16,20 @@ import java.security.AccessController.getContext
 @BindingAdapter("imageOfDayUrl")
 fun bindImageOfDay(imageView : ImageView, imgUrl:String?){
     imgUrl?.let{
-        Picasso.get().load(imgUrl).into(imageView);
+        Picasso.get()
+                .load(imgUrl)
+                .into(imageView);
     }
+//    if (imgUrl!=null){
+//        Picasso.get()
+//                .load(imgUrl)
+//                .into(imageView)
+//    }
+//    else{
+//        Picasso.get()
+//                .load(R.drawable.placeholder_picture_of_day)
+//                .into(imageView)
+//    }
 }
 
 @BindingAdapter("listData")
@@ -32,8 +44,11 @@ fun bindRecyclerView(recyclerView: RecyclerView, data: List<Asteroid>?){
 fun bindAsteroidStatusImage(imageView: ImageView, isHazardous: Boolean) {
     if (isHazardous) {
         imageView.setImageResource(R.drawable.ic_status_potentially_hazardous)
+        imageView.contentDescription="Potentially Hazardous"
     } else {
         imageView.setImageResource(R.drawable.ic_status_normal)
+        imageView.contentDescription="Not Hazardous"
+
     }
 }
 
@@ -41,8 +56,11 @@ fun bindAsteroidStatusImage(imageView: ImageView, isHazardous: Boolean) {
 fun bindDetailsStatusImage(imageView: ImageView, isHazardous: Boolean) {
     if (isHazardous) {
         imageView.setImageResource(R.drawable.asteroid_hazardous)
+        imageView.contentDescription="Potentially Hazardous Asteroid Image"
     } else {
         imageView.setImageResource(R.drawable.asteroid_safe)
+        imageView.contentDescription="Not Hazardous Asteroid Image"
+
     }
 }
 

@@ -33,11 +33,10 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="4dp"
             android:text="@{asteroid.codename}"
-            android:textColor="#ffffff"
-            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="2015 XK351" />
+            tools:text="2015 XK351"
+            style="@style/bold_text" />
 
         <TextView
             android:id="@+id/asteroid_date"
@@ -46,11 +45,11 @@
             android:layout_marginBottom="8dp"
             android:layout_marginTop="8dp"
             android:text="@{asteroid.closeApproachDate}"
-            android:textColor="#ffffff"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/asteroid_name_text"
             app:layout_constraintTop_toBottomOf="@+id/asteroid_name_text"
-            tools:text="2020-02-08" />
+            tools:text="2020-02-08"
+            style="@style/normal_text" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
