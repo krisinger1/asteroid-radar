@@ -1,43 +1,33 @@
 package com.udacity.asteroidradar
 
-import android.app.Application
-import android.content.Context
-import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
-
-import androidx.core.net.toUri
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import com.udacity.asteroidradar.main.AsteroidListAdapter
-import java.security.AccessController.getContext
 
 @BindingAdapter("imageOfDayUrl")
 fun bindImageOfDay(imageView : ImageView, imgUrl:String?){
-    imgUrl?.let{
+
+    if (imgUrl!=null){
         Picasso.get()
                 .load(imgUrl)
-                .into(imageView);
+                .into(imageView)
     }
-//    if (imgUrl!=null){
-//        Picasso.get()
-//                .load(imgUrl)
-//                .into(imageView)
-//    }
-//    else{
-//        Picasso.get()
-//                .load(R.drawable.placeholder_picture_of_day)
-//                .into(imageView)
-//    }
+    else{
+        Picasso.get()
+                // Photo by Jeremy Thomas on Unsplash https://unsplash.com/photos/E0AHdsENmDg
+                // placeholder photo to load when can't get image of the day
+                .load(R.drawable.space_placeholder)
+                .into(imageView)
+    }
 }
 
 @BindingAdapter("listData")
 fun bindRecyclerView(recyclerView: RecyclerView, data: List<Asteroid>?){
     val adapter = recyclerView.adapter as AsteroidListAdapter
-    //if (data!=null) {
         adapter.submitList(data)
-    //}
 }
 
 @BindingAdapter("statusIcon")

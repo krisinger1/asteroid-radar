@@ -18,6 +18,7 @@ class RefreshDataWorker(appContext: Context, params: WorkerParameters) : Corouti
         val repository = AsteroidsRepository(database)
         return try{
             repository.refreshAsteroids(Constants.API_KEY)
+            repository.removeOldAsteroids()
             Result.success()
         }
         catch(e: HttpException){

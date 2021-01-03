@@ -26,11 +26,6 @@ class MainViewModel(application: Application): AndroidViewModel(application){
     val navigateToAsteroidDetails : LiveData<Asteroid>
         get()=_navigateToAsteroidDetails
 
-
-//    private val _asteroidList = MutableLiveData<List<Asteroid>>()
-//    val asteroidList : LiveData<List<Asteroid>>
-//        get()=_asteroidList
-
     private val _imgUrl = MutableLiveData<String>()
     val imgUrl : LiveData<String>
         get()= _imgUrl
@@ -39,9 +34,9 @@ class MainViewModel(application: Application): AndroidViewModel(application){
     val imgTitle : LiveData<String>
         get()= _imgTitle
 
-    private val _status = MutableLiveData<String>()
-    val status : LiveData<String>
-        get()=_status
+//    private val _status = MutableLiveData<String>()
+//    val status : LiveData<String>
+//        get()=_status
 
 
 
@@ -55,6 +50,7 @@ class MainViewModel(application: Application): AndroidViewModel(application){
 
     val asteroidList = asteroidsRepository.asteroids
 
+    // Get image of the day from NASA website
     private fun getImageOfDay() {
         Log.i("viewmodel", "trying to get image of the day")
         viewModelScope.launch{
@@ -64,19 +60,18 @@ class MainViewModel(application: Application): AndroidViewModel(application){
                     _imgUrl.value = imageOfDay.url
                     _imgTitle.value = imageOfDay.title
                 } else {
-                    _imgUrl.value = "https://apod.nasa.gov/apod/image/2001/STSCI-H-p2006a-h-1024x614.jpg"
                     _imgTitle.value = imageOfDay.title
 
                 }
-                Log.i("viewmodel", imageOfDay.url)
             }
             catch(e: Exception){
                 Log.i("viewmodel","failed to get image of the day")
+                _imgTitle.value="Colorful Galaxy"
             }
         }
     }
 
-
+    // refresh asteroids from NASA
     private fun getAsteroids(){
         viewModelScope.launch {
             asteroidsRepository.refreshAsteroids(Constants.API_KEY)
