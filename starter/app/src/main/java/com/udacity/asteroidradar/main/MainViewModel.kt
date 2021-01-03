@@ -55,7 +55,7 @@ class MainViewModel(application: Application): AndroidViewModel(application){
         Log.i("viewmodel", "trying to get image of the day")
         viewModelScope.launch{
             try {
-                var imageOfDay = NasaApi.retrofitService.getImageOfDay("DEMO_KEY")
+                val imageOfDay = NasaApi.retrofitService.getImageOfDay(Constants.API_KEY)
                 if (imageOfDay.isImage) {
                     _imgUrl.value = imageOfDay.url
                     _imgTitle.value = imageOfDay.title

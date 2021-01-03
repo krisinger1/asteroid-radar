@@ -18,18 +18,28 @@ import java.util.*
 
 class AsteroidsRepository(private val database : AsteroidsDatabase){
 
-    val dateFormat = SimpleDateFormat(Constants.API_QUERY_DATE_FORMAT)
-    val today: String = dateFormat.format(Date())
+    private val dateFormat = SimpleDateFormat(Constants.API_QUERY_DATE_FORMAT)
+    private val today: String = dateFormat.format(Date())
 
     // only get asteroids from today on
-    val asteroids : LiveData<List<Asteroid>> = Transformations.map(database.asteroidDao.getAsteroids(today)){
+    val asteroids : LiveData<List<Asteroid>> = Transformations.map(database.asteroidDao.getAsteroids("2021-01-01")){
         it.asDomainModel()
     }
 
-    fun removeOldAsteroids(){
-        val oldAsteroids = database.asteroidDao.getOldAsteroids(today).value
-        if (oldAsteroids!=null) {
-            database.asteroidDao.removeAsteroids(*oldAsteroids.toTypedArray())
+    suspend fun removeOldAsteroids(){
+        Log.i("repository","in remove method")
+        val list = asteroids.value
+        withContext(Dispatchers.IO) {
+            if (list != null) {
+                toDatabaseModel(list).let {
+                    for (a: DatabaseAsteroid in it) {
+                        if (a.closeApproachDate < today) {
+                            Log.i("repository", "found an old asteroid")
+                            database.asteroidDao.removeAsteroid(a)
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -41,21 +51,22 @@ class AsteroidsRepository(private val database : AsteroidsDatabase){
             try {
                 Log.i("AsteroidRepository", "trying to get asteroids")
 
-                var jsonResult = NasaApi.retrofitService.getAsteroids(api_key)
+                val jsonResult = NasaApi.retrofitService.getAsteroids(api_key)
                 // parse JSON string into List of Asteroids
-                var list = parseStringToAsteroidList(jsonResult)
+                val list = parseStringToAsteroidList(jsonResult)
 
                 // make sure there is something in the list
                 if (list.size > 0) {
                     val asteroidArray=toDatabaseModel(list)
                     database.asteroidDao.insertAll(*asteroidArray)
+                    Log.i("repository", "getAsteroids successful")
                 }
                 else{
                     Log.i("AsteroidRepository", "no asteroids in list")
                 }
             }
             catch (e: Exception){
-                Log.i("AsteroidRepository", " in catch block. getAsteroids failed.")
+                Log.i("AsteroidRepository", " in catch block. getAsteroids failed. "+ e.printStackTrace())
 
             }
         }
