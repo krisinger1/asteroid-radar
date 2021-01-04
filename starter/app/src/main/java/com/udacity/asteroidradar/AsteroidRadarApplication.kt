@@ -1,6 +1,7 @@
 package com.udacity.asteroidradar
 
 import android.app.Application
+import android.util.Log
 import androidx.work.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -25,7 +26,6 @@ class AsteroidRadarApplication : Application() {
     private fun delayedInit() =
         applicationScope.launch{
             setUpRecurringWork()
-
     }
 
     private fun setUpRecurringWork() {

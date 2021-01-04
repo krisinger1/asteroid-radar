@@ -22,24 +22,15 @@ class AsteroidsRepository(private val database : AsteroidsDatabase){
     private val today: String = dateFormat.format(Date())
 
     // only get asteroids from today on
-    val asteroids : LiveData<List<Asteroid>> = Transformations.map(database.asteroidDao.getAsteroids("2021-01-01")){
+    val asteroids : LiveData<List<Asteroid>> = Transformations.map(database.asteroidDao.getAsteroids(today)){
         it.asDomainModel()
     }
 
     suspend fun removeOldAsteroids(){
         Log.i("repository","in remove method")
-        val list = asteroids.value
         withContext(Dispatchers.IO) {
-            if (list != null) {
-                toDatabaseModel(list).let {
-                    for (a: DatabaseAsteroid in it) {
-                        if (a.closeApproachDate < today) {
-                            Log.i("repository", "found an old asteroid")
-                            database.asteroidDao.removeAsteroid(a)
-                        }
-                    }
-                }
-            }
+            database.asteroidDao.removeAsteroids(today)
+            Log.i("repository","removed asteroids")
         }
     }
 
@@ -56,7 +47,7 @@ class AsteroidsRepository(private val database : AsteroidsDatabase){
                 val list = parseStringToAsteroidList(jsonResult)
 
                 // make sure there is something in the list
-                if (list.size > 0) {
+                if (list.isNotEmpty()) {
                     val asteroidArray=toDatabaseModel(list)
                     database.asteroidDao.insertAll(*asteroidArray)
                     Log.i("repository", "getAsteroids successful")
